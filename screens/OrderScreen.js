@@ -65,7 +65,6 @@ export default class OrderScreen extends React.Component {
     console.log('Receive props' + val);
   }
 
-    console.log('Receive props' + val);
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -114,18 +113,6 @@ export default class OrderScreen extends React.Component {
     });
   }
 
-  onPressDestination = () => {
-    BottomSheet.showBottomSheetWithOptions({
-      options: ['Input Destination', 'Choose from Map', 'Cancel'],
-      title: 'Destination Options',
-      dark: true,
-      cancelButtonIndex: 2,
-    }, (value) => {
-      alert(value);
-    });
-  }
-
-
   onPressTime= () => {
     this._showDateTimePicker();
   }
@@ -138,6 +125,44 @@ export default class OrderScreen extends React.Component {
    this.state.time.subtitle = date.toString();
    this._hideDateTimePicker();
   };
+
+  onPressCustomer = () => {
+    BottomSheet.showBottomSheetWithOptions({
+      options: ['Input Details', 'Get from my Profile', 'Cancel'],
+      title: 'Customer Options',
+      dark: true,
+      cancelButtonIndex: 2,
+    }, (value) => {
+      if (value == 0) {
+        this.props.navigation.navigate('Input', {screenName: 'Customer', receiveProps: this.receiveProps});
+      }
+      if (value == 1) {
+        this._getProfileData();
+      }
+    });
+  }
+
+  onPressDestination = () => {
+    BottomSheet.showBottomSheetWithOptions({
+      options: ['Input Destination', 'Choose from Map', 'Cancel'],
+      title: 'Destination Options',
+      dark: true,
+      cancelButtonIndex: 2,
+    }, (value) => {
+      if (value == 0) {
+        this.props.navigation.navigate('Input', {screenName: 'Destination', receiveProps: this.receiveProps});
+      }
+      if (value == 1) {
+        this.props.navigation.navigate('MapScreen', { location: this.state.location });
+      }
+    });
+  }
+
+  onPressComment = () => {
+      if (value == 0) {
+        this.props.navigation.navigate('Input', {screenName: 'Comment', receiveProps: this.receiveProps});
+      }
+    };
 
   render() {
     return (
@@ -157,10 +182,13 @@ export default class OrderScreen extends React.Component {
           />
           <ListItem
             title={this.state.customer.title}
+            subtitle={this.state.customer.subtitle}
             leftIcon={{name:this.state.address.icon}}
+            onPress={this.onPressCustomer}
           />
           <ListItem
             title={this.state.destination.title}
+            subtitle={this.state.destination.subtitle}
             leftIcon={{name:this.state.address.icon}}
             onPress={this.onPressDestination}
           />
