@@ -159,9 +159,7 @@ export default class OrderScreen extends React.Component {
   }
 
   onPressComment = () => {
-      if (value == 0) {
         this.props.navigation.navigate('Input', {screenName: 'Comment', receiveProps: this.receiveProps});
-      }
     };
 
   render() {

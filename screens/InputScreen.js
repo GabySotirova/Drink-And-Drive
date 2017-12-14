@@ -18,7 +18,7 @@ class InputScreen extends Component {
     return (
       <View>
         <View style={{ marginBottom: 10 }}>
-         <FormLabel>{this.props.navigation.state.params.input}</FormLabel>
+         <FormLabel>{this.props.navigation.state.params.screenName}</FormLabel>
          <FormInput
           onChangeText={input => this.setState({ input })}
         />
