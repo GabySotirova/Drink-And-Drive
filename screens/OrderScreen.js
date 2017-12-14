@@ -65,6 +65,8 @@ export default class OrderScreen extends React.Component {
     console.log('Receive props' + val);
   }
 
+    console.log('Receive props' + val);
+
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
