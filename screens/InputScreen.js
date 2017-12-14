@@ -5,11 +5,13 @@ import { FormLabel, FormInput, Button } from 'react-native-elements';
 
 class InputScreen extends Component {
   state = {
+    screenName: '',
     input: ''
   };
 
   onSubmit = () => {
-
+    this.props.navigation.state.params.receiveProps(this.state.input);
+    this.props.navigation.goBack();
   }
 
   render() {

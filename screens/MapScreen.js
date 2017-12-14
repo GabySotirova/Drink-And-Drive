@@ -17,7 +17,8 @@ export default class MapScreen extends React.Component {
       longitude: 37
     },
     location: null,
-    errorMessage: null
+    errorMessage: null,
+    markerTitle: ""
   }
 
   componentWillMount() {
@@ -35,6 +36,8 @@ export default class MapScreen extends React.Component {
     this.setState({ region: newRegion });
     const newMarkerPosition = Object.assign({}, this.state.markerPosition, { longitude: newLongitude, latitude: newLatitude });
     this.setState({ markerPosition: newMarkerPosition });
+
+    this.getAddress(newLatitude,newLongitude);
     console.log('WILL MOUNT LONG' + JSON.stringify(this.props.navigation.state.params.location.longitude));
   }
 
@@ -57,6 +60,17 @@ export default class MapScreen extends React.Component {
     console.log(JSON.stringify(this.state.location));
   };
 
+  getAddress = (latitude,longitude) => {
+    fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + latitude + ',' + longitude + '&key=' + 'AIzaSyA0yVsvTBpKV2jGAEkBCZFxc0muYqvilCo')
+        .then((response) => response.json())
+        .then((responseJson) => {
+          let address = JSON.stringify(responseJson['results'][0].formatted_address);
+          this.setState({ markerTitle: address });
+          this.refs.marker.showCallout();
+          console.log('ADDRESS GEOCODE is BACK!! => ' + JSON.stringify(responseJson['results'][0].formatted_address));
+    })
+  }
+
   onRegionChangeComplete = (region) => {
     this.setState({ region });
   }
@@ -66,7 +80,8 @@ export default class MapScreen extends React.Component {
       latitude:  e.nativeEvent.coordinate.latitude,
       longitude: e.nativeEvent.coordinate.longitude,
     }
-    this.setState({markerPosition: location})
+    this.setState({markerPosition: location});
+    this.getAddress(location.latitude,location.longitude);
     console.log(location);
   }
 
@@ -77,6 +92,7 @@ export default class MapScreen extends React.Component {
           <ActivityIndicator size="large" />
         </View>
       );
+      this.refs.marker.showCallout();
     }
 
     return (
@@ -93,9 +109,9 @@ export default class MapScreen extends React.Component {
           provider="google"
         >
           <MapView.Marker
-              coordinate={this.state.markerPosition}
-              title="Selected location"
-              onLoad={() => this.forceUpdate()}
+            ref='marker'
+            coordinate={this.state.markerPosition}
+            title={this.state.markerTitle}
           />
         </MapView>
       </View>
