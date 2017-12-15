@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableHighlight, View, Text, Platform } from 'react-native';
+import { StyleSheet, TouchableHighlight, View, Text, Platform, TouchableWithoutFeedback } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ListView, List, ListItem, Icon, FormLabel, FormInput, Button } from 'react-native-elements';
 import { Constants, Location, Permissions } from 'expo';
@@ -35,7 +35,8 @@ export default class OrderScreen extends React.Component {
       },
       isDateTimePickerVisible: false,
       location: null,
-      errorMessage: null
+      errorMessage: null,
+      addressSubtitle: null,
   };
 
   static navigationOptions = {
@@ -57,12 +58,28 @@ export default class OrderScreen extends React.Component {
     }
   }
 
-  //receive props from child components
-  receiveProps = (child, ) => {
-    this.setState({
-      location: val
-    });
-    console.log('Receive props' + val);
+  //Get data from child components
+  receiveProps = (sender, val) => {
+    if (sender == 'Address') {
+      const newAddress = Object.assign({}, this.state.address, { subtitle: val });
+      this.setState({ address: newAddress });
+      console.log('Address');
+    }
+    if (sender == 'Customer') {
+      const newCustomer = Object.assign({}, this.state.customer, { subtitle: val });
+      this.setState({ customer: newCustomer });
+      console.log('Customer');
+    }
+    if (sender == 'Destination') {
+      const newDestination = Object.assign({}, this.state.destination, { subtitle: val });
+      this.setState({ destination: newDestination });
+      console.log('Destination');
+    }
+    if (sender == 'Comment') {
+      const newComment = Object.assign({}, this.state.comment, { subtitle: val });
+      this.setState({ comment: newComment });
+      console.log('Comment');
+    }
   }
 
 
@@ -192,17 +209,20 @@ export default class OrderScreen extends React.Component {
           />
           <ListItem
             title={this.state.comment.title}
+            subtitle={this.state.comment.subtitle}
             leftIcon={{name:this.state.address.icon}}
             onPress={this.onPressComment}
           />
 
-          <DateTimePicker
-            isVisible={this.state.isDateTimePickerVisible}
-            onConfirm={this._handleDatePicked}
-            onCancel={this._hideDateTimePicker}
-            minimumDate={new Date()}
-            mode={'datetime'}
-          />
+          <TouchableWithoutFeedback>
+            <DateTimePicker
+              isVisible={this.state.isDateTimePickerVisible}
+              onConfirm={this._handleDatePicked}
+              onCancel={this._hideDateTimePicker}
+              minimumDate={new Date()}
+              mode={'datetime'}
+            />
+          </TouchableWithoutFeedback>
 
         </List>
 

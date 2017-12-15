@@ -9,8 +9,23 @@ class InputScreen extends Component {
     input: ''
   };
 
+  componentDidMount() {
+    this.setState({
+      screenName: this.props.navigation.state.params.screenName,
+    });
+  }
+
+  static navigationOptions =  {
+    title: 'Input',
+    // Note: By default the icon is only shown on iOS. Search the showIcon option below.
+    tabBarIcon: ({ tintColor }) => (
+    <Icon
+      name='receipt' />
+    ),
+  };
+
   onSubmit = () => {
-    this.props.navigation.state.params.receiveProps(this.state.input);
+    this.props.navigation.state.params.receiveProps(this.state.screenName, this.state.input);
     this.props.navigation.goBack();
   }
 
