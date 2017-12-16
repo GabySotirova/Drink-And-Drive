@@ -100,7 +100,12 @@ export default class OrderScreen extends React.Component {
     fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + this.state.location.coords.latitude + ',' + this.state.location.coords.longitude + '&key=' + 'AIzaSyA0yVsvTBpKV2jGAEkBCZFxc0muYqvilCo')
         .then((response) => response.json())
         .then((responseJson) => {
-          let location = JSON.stringify(responseJson['results'][0].formatted_address);
+          //let location = JSON.stringify(responseJson['results'][0].formatted_address);
+          let address = (JSON.stringify(responseJson['results'][0].address_components[1]['long_name'])).replace(/"/gi,'') + ' '
+                       +(JSON.stringify(responseJson['results'][0].address_components[0]['long_name'])).replace(/"/gi,'') + ', '
+                       +(JSON.stringify(responseJson['results'][0].address_components[5]['long_name'])).replace(/"/gi,'') + ', '
+                       +(JSON.stringify(responseJson['results'][0].address_components[2]['long_name'])).replace(/"/gi,'');
+          let location = address.replace(/"/gi,'');
           const newAddress = Object.assign({}, this.state.address, { subtitle: location });
           this.setState({ address: newAddress });
           console.log('ADDRESS GEOCODE is BACK!! => ' + JSON.stringify(responseJson['results'][0].formatted_address));
@@ -119,13 +124,15 @@ export default class OrderScreen extends React.Component {
       cancelButtonIndex: 3,
     }, (value) => {
       if (value == 0) {
-        this.props.navigation.navigate('Input', {screenName: 'Address', receiveProps: this.receiveProps});
+        this.props.navigation.navigate('Input',
+        { screenName: 'Address', receiveProps: this.receiveProps });
       }
       if (value == 1) {
         this._getLocationAsync();
       }
       if (value == 2) {
-        this.props.navigation.navigate('MapScreen', { location: this.state.location });
+        this.props.navigation.navigate('MapScreen',
+        { title: 'Map', screenName: 'Address', location: this.state.location, receiveProps: this.receiveProps });
       }
     });
   }
