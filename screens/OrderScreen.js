@@ -63,22 +63,18 @@ export default class OrderScreen extends React.Component {
     if (sender == 'Address') {
       const newAddress = Object.assign({}, this.state.address, { subtitle: val });
       this.setState({ address: newAddress });
-      console.log('Address');
     }
     if (sender == 'Customer') {
       const newCustomer = Object.assign({}, this.state.customer, { subtitle: val });
       this.setState({ customer: newCustomer });
-      console.log('Customer');
     }
     if (sender == 'Destination') {
       const newDestination = Object.assign({}, this.state.destination, { subtitle: val });
       this.setState({ destination: newDestination });
-      console.log('Destination');
     }
     if (sender == 'Comment') {
       const newComment = Object.assign({}, this.state.comment, { subtitle: val });
       this.setState({ comment: newComment });
-      console.log('Comment');
     }
   }
 
@@ -100,7 +96,6 @@ export default class OrderScreen extends React.Component {
     fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + this.state.location.coords.latitude + ',' + this.state.location.coords.longitude + '&key=' + 'AIzaSyA0yVsvTBpKV2jGAEkBCZFxc0muYqvilCo')
         .then((response) => response.json())
         .then((responseJson) => {
-          //let location = JSON.stringify(responseJson['results'][0].formatted_address);
           let address = (JSON.stringify(responseJson['results'][0].address_components[1]['long_name'])).replace(/"/gi,'') + ' '
                        +(JSON.stringify(responseJson['results'][0].address_components[0]['long_name'])).replace(/"/gi,'') + ', '
                        +(JSON.stringify(responseJson['results'][0].address_components[5]['long_name'])).replace(/"/gi,'') + ', '
@@ -125,7 +120,7 @@ export default class OrderScreen extends React.Component {
     }, (value) => {
       if (value == 0) {
         this.props.navigation.navigate('Input',
-        { screenName: 'Address', receiveProps: this.receiveProps });
+        { input: this.state.address.subtitle, screenName: 'Address', receiveProps: this.receiveProps });
       }
       if (value == 1) {
         this._getLocationAsync();
@@ -146,6 +141,7 @@ export default class OrderScreen extends React.Component {
   _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
 
   _handleDatePicked = (date) => {
+    console.log(date);
    this.state.time.subtitle = date.toString();
    this._hideDateTimePicker();
   };
@@ -158,7 +154,8 @@ export default class OrderScreen extends React.Component {
       cancelButtonIndex: 2,
     }, (value) => {
       if (value == 0) {
-        this.props.navigation.navigate('Input', {screenName: 'Customer', receiveProps: this.receiveProps});
+        this.props.navigation.navigate('Input',
+        { screenName: 'Customer', receiveProps: this.receiveProps });
       }
       if (value == 1) {
         this._getProfileData();
@@ -174,16 +171,19 @@ export default class OrderScreen extends React.Component {
       cancelButtonIndex: 2,
     }, (value) => {
       if (value == 0) {
-        this.props.navigation.navigate('Input', {screenName: 'Destination', receiveProps: this.receiveProps});
+        this.props.navigation.navigate('Input',
+        { input: this.state.destination.subtitle,screenName: 'Destination', receiveProps: this.receiveProps });
       }
       if (value == 1) {
-        this.props.navigation.navigate('MapScreen', { location: this.state.location });
+        this.props.navigation.navigate('MapScreen',
+        { title: 'Map', screenName: 'Destination', location: this.state.location, receiveProps: this.receiveProps });
       }
     });
   }
 
   onPressComment = () => {
-        this.props.navigation.navigate('Input', {screenName: 'Comment', receiveProps: this.receiveProps});
+        this.props.navigation.navigate('Input',
+        { input: this.state.comment.subtitle, screenName: 'Comment', receiveProps: this.receiveProps });
     };
 
   render() {

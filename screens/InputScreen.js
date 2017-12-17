@@ -12,6 +12,7 @@ class InputScreen extends Component {
   componentDidMount() {
     this.setState({
       screenName: this.props.navigation.state.params.screenName,
+      input: this.props.navigation.state.params.input,
     });
   }
 
@@ -30,12 +31,15 @@ class InputScreen extends Component {
   }
 
   render() {
+    console.log(this.props.navigation.state.params.input);
     return (
       <View>
         <View style={{ marginBottom: 10 }}>
          <FormLabel>{this.props.navigation.state.params.screenName}</FormLabel>
          <FormInput
           onChangeText={input => this.setState({ input })}
+          value={this.state.input}
+          selectTextOnFocus={true}
         />
         </View>
        <Button onPress={this.onSubmit} title="Submit" />

@@ -111,7 +111,7 @@ export default class MapScreen extends React.Component {
   }
 
   _onChooseLocation = () => {
-    this.props.navigation.state.params.receiveProps('Address', this.state.markerTitle);
+    this.props.navigation.state.params.receiveProps(this.props.navigation.state.params.screenName, this.state.markerTitle);
     this.props.navigation.goBack();
     console.log();
   }
