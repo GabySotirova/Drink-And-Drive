@@ -108,7 +108,7 @@ export default class OrderScreen extends React.Component {
   }
 
   onSubmit = () => {
-
+    console.log(!isNaN('123'));
   }
 
   onPressAddress = () => {

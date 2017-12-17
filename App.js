@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import firebase from 'firebase';
 import ProfileScreen from './screens/ProfileScreen';
@@ -7,6 +7,8 @@ import OrderScreen from './screens/OrderScreen';
 import StatusScreen from './screens/StatusScreen';
 import InputScreen from './screens/InputScreen';
 import MapScreen from './screens/MapScreen';
+import SignUpForm from './screens/SignUpForm';
+import SignInForm from './screens/SignInForm';
 
 
 const TabNav = TabNavigator({
@@ -42,6 +44,12 @@ const StackNav = StackNavigator({
 export default class App extends React.Component {
 
   componentDidMount() {
+    this.firebaseInitialize();
+
+    console.log('Start')
+  }
+
+  firebaseInitialize() {
     var config = {
      apiKey: "AIzaSyAZzqPWgp3AfMfnYOS9_TPofwfBT716Qrk",
      authDomain: "drink-and-drive.firebaseapp.com",
@@ -52,7 +60,6 @@ export default class App extends React.Component {
     };
 
     firebase.initializeApp(config);
-    console.log('Start')
   }
 
   render() {

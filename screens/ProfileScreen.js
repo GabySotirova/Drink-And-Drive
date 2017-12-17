@@ -1,32 +1,37 @@
 import React, { Component } from 'react';
-import { KeyboardAvoidingView, StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, AsyncStorage } from 'react-native';
 import SignInForm from './SignInForm';
 import SignUpForm from './SignUpForm';
 import { Icon, FormLabel, FormInput } from 'react-native-elements';
 import firebase from 'firebase';
 import Modal from 'react-native-modalbox';
 import Button from 'react-native-button';
+import { StackNavigator } from 'react-navigation';
+import ProfileForm from './ProfileForm';
+
+const ProfileNavigator = StackNavigator({
+    SignUpForm: {
+      screen: SignUpForm,
+    },
+    SignInForm: {
+      screen: SignInForm,
+    },
+    ProfileForm: {
+      screen: ProfileForm,
+    }
+    },
+    {
+     headerMode: 'none',
+     navigationOptions: {
+        gesturesEnabled: false
+     }
+   }
+);
 
 export default class ProfileScreen extends React.Component {
-
   state = {
-      isOpen: false,
-      isDisabled: false,
-      swipeToClose: true,
-      sliderValue: 0.3
+      user: null,
   };
-
-  onClose() {
-    console.log('Modal just closed');
-  }
-
-  onOpen() {
-    console.log('Modal just openned');
-  }
-
-  onClosingState(state) {
-    console.log('the open/close of the swipeToClose just changed');
-  }
 
   static navigationOptions = {
     tabBarLabel: 'Profile',
@@ -38,36 +43,18 @@ export default class ProfileScreen extends React.Component {
   };
 
   componentDidMount() {
-    var user = firebase.auth().currentUser;
+    let user = firebase.auth().currentUser;
 
-      if (user == null) {
-        console.log(user);
-        this.refs.modal1.open();
-      } else {
-        // No user is signed in.
-      }
+    if (user !== null) {
+      this.props.navigation.navigate('ProfileForm');
+    } else {
+      this.props.navigation.navigate('SignUpForm');
+    }
   }
 
   render() {
     return(
-      <View style={styles.container}>
-        <Modal
-          style={styles.modal}
-          ref={"modal1"}
-          swipeToClose={this.state.swipeToClose}
-          onClosed={this.onClose}
-          onOpened={this.onOpen}
-          onClosingState={this.onClosingState}>
-          <Button onPress={() => this.refs.modal1.close()} style={styles.btnModal}>X</Button>
-          <KeyboardAvoidingView style={{ marginBottom: 10 }, { marginTop: 20 }}>
-            <FormLabel>Enter Phone Number</FormLabel>
-            <FormInput />
-          </KeyboardAvoidingView>
-        </Modal>
-
-        <Button onPress={() => this.refs.modal1.open()}>Basic modal</Button>
-
-      </View>
+      <ProfileNavigator />
     );
   }
 }
@@ -105,3 +92,29 @@ const styles = StyleSheet.create({
   },
 
 });
+
+//   if (this.state.user == null) {
+//     return( <SignUpForm /> );
+//   } else if (this.state.user == null && this.state.authProgress == 'requestPassword') {
+//     return( <SignInForm /> );
+//   }
+// }
+
+// <View style={styles.container}>
+//   <Modal
+//     style={styles.modal}
+//     ref={"modal1"}
+//     swipeToClose={this.state.swipeToClose}
+//     onClosed={this.onClose}
+//     onOpened={this.onOpen}
+//     onClosingState={this.onClosingState}>
+//     <Button onPress={() => this.refs.modal1.close()} style={styles.btnModal}>X</Button>
+//     <KeyboardAvoidingView style={{ marginBottom: 10 }, { marginTop: 20 }}>
+//       <FormLabel>Enter Phone Number</FormLabel>
+//       <FormInput />
+//     </KeyboardAvoidingView>
+//   </Modal>
+//
+//   <Button onPress={() => this.refs.modal1.open()}>Basic modal</Button>
+//
+// </View>
