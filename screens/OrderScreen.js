@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableHighlight, View, Text, Platform, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, TouchableHighlight, View, Text, Platform, TouchableWithoutFeedback, AsyncStorage } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ListView, List, ListItem, Icon, FormLabel, FormInput, Button } from 'react-native-elements';
 import { Constants, Location, Permissions } from 'expo';
@@ -22,7 +22,7 @@ export default class OrderScreen extends React.Component {
         subtitle: ''
       },
       customer: {
-        title: 'Customer',
+        title: 'Customer phone',
         subtitle: ''
       },
       destination: {
@@ -107,10 +107,6 @@ export default class OrderScreen extends React.Component {
     })
   }
 
-  onSubmit = () => {
-    console.log(!isNaN('123'));
-  }
-
   onPressAddress = () => {
     BottomSheet.showBottomSheetWithOptions({
       options: ['Input Address', 'Current Location', 'Choose from Map', 'Cancel'],
@@ -155,12 +151,34 @@ export default class OrderScreen extends React.Component {
     }, (value) => {
       if (value == 0) {
         this.props.navigation.navigate('Input',
-        { screenName: 'Customer', receiveProps: this.receiveProps });
+        { input: this.state.customer.subtitle, screenName: 'Customer', receiveProps: this.receiveProps });
       }
       if (value == 1) {
-        this._getProfileData();
+        this.getProfileData();
       }
     });
+  }
+
+  getProfileData = async () => {
+
+    let user = firebase.auth().currentUser;
+
+    if (user !== null) {
+      try {
+        const value = await AsyncStorage.getItem('userPhone');
+        if (value !== null){
+          let phone = value;
+          const newCustomer = Object.assign({}, this.state.customer, { subtitle: phone });
+          this.setState({ customer: newCustomer });
+        } else {
+          this.props.navigation.navigate('Profile');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      this.props.navigation.navigate('Profile');
+    }
   }
 
   onPressDestination = () => {
@@ -182,9 +200,33 @@ export default class OrderScreen extends React.Component {
   }
 
   onPressComment = () => {
-        this.props.navigation.navigate('Input',
-        { input: this.state.comment.subtitle, screenName: 'Comment', receiveProps: this.receiveProps });
-    };
+      this.props.navigation.navigate('Input',
+      { input: this.state.comment.subtitle, screenName: 'Comment', receiveProps: this.receiveProps });
+  };
+
+  onSubmit = () => {
+    if (this.state.customer.subtitle.length > 0) {
+      this.makeOrder(
+        this.state.address.subtitle,
+        this.state.time.subtitle,
+        this.state.customer.subtitle,
+        this.state.destination.subtitle,
+        this.state.comment.subtitle
+      );
+      alert('Your order has been made')
+    } else {
+      alert('Please enter customer credentials');
+    }
+  }
+
+  makeOrder(address, time, customer, destination, comment) {
+    firebase.database().ref('orders/' + customer).set({
+      address: address,
+      time: time,
+      destination: destination,
+      comment: comment
+    });
+  }
 
   render() {
     return (

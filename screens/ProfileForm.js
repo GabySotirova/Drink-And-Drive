@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, AsyncStorage } from 'react-native';
 import { Icon, FormLabel, FormInput, Button } from 'react-native-elements';
 
 export default class ProfileForm extends React.Component {
@@ -15,10 +15,30 @@ export default class ProfileForm extends React.Component {
 
   componentDidMount() {
     this.setState({ phone: this.props.navigation.state.params.phone });
+    this.fetchInformation();
   }
 
-  onPress = () => {
-    
+  fetchInformation = async () => {
+    AsyncStorage.getAllKeys((err, keys) => {
+      AsyncStorage.multiGet(keys, (err, stores) => {
+        stores.map((result, i, store) => {
+          // get at each store's key/value so you can work with it
+          let key = store[i][0];
+          let value = store[i][1];
+          console.log(key + ' ' + value);
+        });
+      });
+    });
+  }
+
+  onSave = async () => {
+    try {
+      await AsyncStorage.multiSet([['userName', this.state.name], ['userPhone', this.state.phone], ['userAddress', this.state.address]]);
+      alert('Saved');
+      this.fetchInformation();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
@@ -46,7 +66,7 @@ export default class ProfileForm extends React.Component {
          />
        </View>
 
-       <Button onPress={this.onSubmit} title="Save" />
+       <Button onPress={this.onSave} title="Save" />
       </View>
     );
   }
