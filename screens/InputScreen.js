@@ -23,7 +23,7 @@ class InputScreen extends Component {
           onChangeText={input => this.setState({ input })}
         />
         </View>
-       <Button onPress={this.onSubmit} title="Submit" />
+       <Button  onSubmitEditing={(event) => this.onSubmitHandler(event)} title="Submit"/>
       </View>
     );
   }

@@ -1,22 +1,18 @@
 import React, { Component } from 'react';
-import { KeyboardAvoidingView, StyleSheet, View, Text } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import SignInForm from './SignInForm';
 import SignUpForm from './SignUpForm';
-import { Icon, FormLabel, FormInput } from 'react-native-elements';
+import { Icon, FormLabel, FormInput, Button } from 'react-native-elements';
 import firebase from 'firebase';
-import Modal from 'react-native-modalbox';
-import Button from 'react-native-button';
+import Modal from 'react-native-modal';
 
 export default class ProfileScreen extends React.Component {
 
   state = {
-      isOpen: false,
-      isDisabled: false,
-      swipeToClose: true,
-      sliderValue: 0.3
+       isModalVisible: false
   };
 
-  onClose() {
+  /*onClose() {
     console.log('Modal just closed');
   }
 
@@ -26,7 +22,11 @@ export default class ProfileScreen extends React.Component {
 
   onClosingState(state) {
     console.log('the open/close of the swipeToClose just changed');
-  }
+  }*/
+
+  _showModal = () => this.setState({ isModalVisible: true })
+
+  _hideModal = () => this.setState({ isModalVisible: false })
 
   static navigationOptions = {
     tabBarLabel: 'Profile',
@@ -42,7 +42,6 @@ export default class ProfileScreen extends React.Component {
 
       if (user == null) {
         console.log(user);
-        this.refs.modal1.open();
       } else {
         // No user is signed in.
       }
@@ -50,7 +49,7 @@ export default class ProfileScreen extends React.Component {
 
   render() {
     return(
-      <View style={styles.container}>
+      /*<View style={styles.container}>
         <Modal
           style={styles.modal}
           ref={"modal1"}
@@ -67,6 +66,24 @@ export default class ProfileScreen extends React.Component {
 
         <Button onPress={() => this.refs.modal1.open()}>Basic modal</Button>
 
+      </View>*/
+
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity onPress={this._showModal}>
+          <Text>Show Modal</Text>
+        </TouchableOpacity>
+        <Modal isVisible={this.state.isModalVisible}>
+          <View style={{ flex: 1 }}>
+            <Button onPress={() => this._hideModal()} style={styles.btnModal}>X</Button>
+          </View>
+          <View style={{ flex: 2 }}>
+            <FormLabel style={styles.formLabel}>Enter Phone Number</FormLabel>
+            <FormInput />
+          </View>
+          <View style={{ flex: 3 }}>
+          <Button onPress={this.onSubmit} style={styles.btnModalSubmit} title="Submit"></Button>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -99,9 +116,11 @@ const styles = StyleSheet.create({
    bottom: 10,
    backgroundColor: "transparent"
   },
+  btnModalSubmit: {
+
+  },
   signinform: {
     position: 'absolute',
     marginTop: 20
   },
-
 });
