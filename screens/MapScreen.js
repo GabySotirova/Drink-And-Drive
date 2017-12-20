@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ActivityIndicator, Platform } from 'react-native';
-import { Constants, Location, Permissions } from 'expo';
+import { StyleSheet, View, Text, ActivityIndicator, Platform, Button } from 'react-native';
+import { Constants, Location, Permissions, Ionicons } from 'expo';
 import MapView from 'react-native-maps';
 
 export default class MapScreen extends React.Component {
@@ -18,8 +18,23 @@ export default class MapScreen extends React.Component {
     },
     location: null,
     errorMessage: null,
-    markerTitle: ""
+    markerTitle: "",
+    screenName: "",
   }
+
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    headerRight = (
+      <Button
+        title="Choose"
+        onPress={params.onChooseLocation ? params.onChooseLocation : () => null}
+      />
+    );
+    return {
+      title: `${params.title}`,
+      headerRight
+    }
+  };
 
   componentWillMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -43,8 +58,8 @@ export default class MapScreen extends React.Component {
 
   componentDidMount() {
     this.setState({ mapReady: true });
+    this.props.navigation.setParams({ onChooseLocation: this._onChooseLocation });
     console.log(this.state.mapReady);
-
   }
 
   _getLocationAsync = async () => {
@@ -64,10 +79,12 @@ export default class MapScreen extends React.Component {
     fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + latitude + ',' + longitude + '&key=' + 'AIzaSyA0yVsvTBpKV2jGAEkBCZFxc0muYqvilCo')
         .then((response) => response.json())
         .then((responseJson) => {
-          let address = JSON.stringify(responseJson['results'][0].formatted_address);
+          let address = (JSON.stringify(responseJson['results'][0].address_components[1]['long_name'])).replace(/"/gi,'') + ' '
+                       +(JSON.stringify(responseJson['results'][0].address_components[0]['long_name'])).replace(/"/gi,'') + ', '
+                       +(JSON.stringify(responseJson['results'][0].address_components[5]['long_name'])).replace(/"/gi,'') + ', '
+                       +(JSON.stringify(responseJson['results'][0].address_components[2]['long_name'])).replace(/"/gi,'');
           this.setState({ markerTitle: address });
           this.refs.marker.showCallout();
-          console.log('ADDRESS GEOCODE is BACK!! => ' + JSON.stringify(responseJson['results'][0].formatted_address));
     })
   }
 
@@ -76,13 +93,27 @@ export default class MapScreen extends React.Component {
   }
 
   onMapPress = (e) => {
-    let location = {
-      latitude:  e.nativeEvent.coordinate.latitude,
-      longitude: e.nativeEvent.coordinate.longitude,
+    try {
+      let location = {
+        latitude:  e.nativeEvent.coordinate.latitude,
+        longitude: e.nativeEvent.coordinate.longitude,
+      }
+      this.setState({markerPosition: location});
+      this.getAddress(location.latitude,location.longitude);
+      console.log(location);
+    } catch (e) {
+      console.log(e);
     }
-    this.setState({markerPosition: location});
-    this.getAddress(location.latitude,location.longitude);
-    console.log(location);
+  }
+
+  onCalloutPress = (e) => {
+    this._onChooseLocation();
+  }
+
+  _onChooseLocation = () => {
+    this.props.navigation.state.params.receiveProps(this.props.navigation.state.params.screenName, this.state.markerTitle);
+    this.props.navigation.goBack();
+    console.log();
   }
 
   render() {
@@ -92,12 +123,12 @@ export default class MapScreen extends React.Component {
           <ActivityIndicator size="large" />
         </View>
       );
-      this.refs.marker.showCallout();
     }
 
     return (
       <View style={{ flex: 1 }}>
         <MapView
+          ref='map'
           region={this.state.region}
           style={{ flex: 1 }}
           onRegionChangeComplete={this.onRegionChangeComplete}
@@ -106,12 +137,14 @@ export default class MapScreen extends React.Component {
           zoomEnabled={true}
           showsMyLocationButton={true}
           onPress={this.onMapPress}
-          provider="google"
         >
           <MapView.Marker
             ref='marker'
+            style={{width: 300, height: 100}}
+            tooltip={true}
             coordinate={this.state.markerPosition}
             title={this.state.markerTitle}
+            onCalloutPress={this.onCalloutPress}
           />
         </MapView>
       </View>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, TouchableHighlight, View, Text, Platform } from 'react-native';
+import { StyleSheet, TouchableHighlight, View, Text, Platform, TouchableWithoutFeedback, AsyncStorage } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ListView, List, ListItem, Icon, FormLabel, FormInput, Button } from 'react-native-elements';
 import { Constants, Location, Permissions } from 'expo';
@@ -13,36 +13,39 @@ export default class OrderScreen extends React.Component {
   state = {
     address: {
         title: 'Address',
-        icon: 'av-timer',
+        icon: 'my-location',
         subtitle: 'Fetching your location ...'
       },
       time: {
         title: 'Pick-up Time',
-        icon: 'flight-takeoff',
+        icon: 'access-time',
         subtitle: ''
       },
       customer: {
-        title: 'Customer',
+        title: 'Customer phone',
+        icon: 'perm-identity',
         subtitle: ''
       },
       destination: {
         title: 'Destination',
+        icon: 'location-on',
         subtitle: ''
       },
       comment: {
         title: 'Comment',
+        icon: 'comment',
         subtitle: ''
       },
       isDateTimePickerVisible: false,
       location: null,
-      errorMessage: null
+      errorMessage: null,
+      addressSubtitle: null,
   };
 
   static navigationOptions = {
     title: 'Order',
-    // Note: By default the icon is only shown on iOS. Search the showIcon option below.
     tabBarIcon: ({ tintColor }) => (
-    <Icon
+      <Icon
       name='receipt' />
     ),
   };
@@ -57,12 +60,24 @@ export default class OrderScreen extends React.Component {
     }
   }
 
-  //receive props from child components
-  receiveProps = (child, ) => {
-    this.setState({
-      location: val
-    });
-    console.log('Receive props' + val);
+  //Get data from child components
+  receiveProps = (sender, val) => {
+    if (sender == 'Address') {
+      const newAddress = Object.assign({}, this.state.address, { subtitle: val });
+      this.setState({ address: newAddress });
+    }
+    if (sender == 'Customer') {
+      const newCustomer = Object.assign({}, this.state.customer, { subtitle: val });
+      this.setState({ customer: newCustomer });
+    }
+    if (sender == 'Destination') {
+      const newDestination = Object.assign({}, this.state.destination, { subtitle: val });
+      this.setState({ destination: newDestination });
+    }
+    if (sender == 'Comment') {
+      const newComment = Object.assign({}, this.state.comment, { subtitle: val });
+      this.setState({ comment: newComment });
+    }
   }
 
 
@@ -83,15 +98,15 @@ export default class OrderScreen extends React.Component {
     fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + this.state.location.coords.latitude + ',' + this.state.location.coords.longitude + '&key=' + 'AIzaSyA0yVsvTBpKV2jGAEkBCZFxc0muYqvilCo')
         .then((response) => response.json())
         .then((responseJson) => {
-          let location = JSON.stringify(responseJson['results'][0].formatted_address);
+          let address = (JSON.stringify(responseJson['results'][0].address_components[1]['long_name'])).replace(/"/gi,'') + ' '
+                       +(JSON.stringify(responseJson['results'][0].address_components[0]['long_name'])).replace(/"/gi,'') + ', '
+                       +(JSON.stringify(responseJson['results'][0].address_components[5]['long_name'])).replace(/"/gi,'') + ', '
+                       +(JSON.stringify(responseJson['results'][0].address_components[2]['long_name'])).replace(/"/gi,'');
+          let location = address.replace(/"/gi,'');
           const newAddress = Object.assign({}, this.state.address, { subtitle: location });
           this.setState({ address: newAddress });
           console.log('ADDRESS GEOCODE is BACK!! => ' + JSON.stringify(responseJson['results'][0].formatted_address));
     })
-  }
-
-  onSubmit = () => {
-
   }
 
   onPressAddress = () => {
@@ -102,13 +117,15 @@ export default class OrderScreen extends React.Component {
       cancelButtonIndex: 3,
     }, (value) => {
       if (value == 0) {
-        this.props.navigation.navigate('Input', {screenName: 'Address', receiveProps: this.receiveProps});
+        this.props.navigation.navigate('Input',
+        { input: this.state.address.subtitle, screenName: 'Address', receiveProps: this.receiveProps });
       }
       if (value == 1) {
         this._getLocationAsync();
       }
       if (value == 2) {
-        this.props.navigation.navigate('MapScreen', { location: this.state.location });
+        this.props.navigation.navigate('MapScreen',
+        { title: 'Map', screenName: 'Address', location: this.state.location, receiveProps: this.receiveProps });
       }
     });
   }
@@ -122,6 +139,7 @@ export default class OrderScreen extends React.Component {
   _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
 
   _handleDatePicked = (date) => {
+    console.log(date);
    this.state.time.subtitle = date.toString();
    this._hideDateTimePicker();
   };
@@ -134,12 +152,35 @@ export default class OrderScreen extends React.Component {
       cancelButtonIndex: 2,
     }, (value) => {
       if (value == 0) {
-        this.props.navigation.navigate('Input', {screenName: 'Customer', receiveProps: this.receiveProps});
+        this.props.navigation.navigate('Input',
+        { input: this.state.customer.subtitle, screenName: 'Customer', receiveProps: this.receiveProps });
       }
       if (value == 1) {
-        this._getProfileData();
+        this.getProfileData();
       }
     });
+  }
+
+  getProfileData = async () => {
+
+    let user = firebase.auth().currentUser;
+
+    if (user !== null) {
+      try {
+        const value = await AsyncStorage.getItem('userPhone');
+        if (value !== null){
+          let phone = value;
+          const newCustomer = Object.assign({}, this.state.customer, { subtitle: phone });
+          this.setState({ customer: newCustomer });
+        } else {
+          this.props.navigation.navigate('Profile');
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      this.props.navigation.navigate('Profile');
+    }
   }
 
   onPressDestination = () => {
@@ -150,22 +191,49 @@ export default class OrderScreen extends React.Component {
       cancelButtonIndex: 2,
     }, (value) => {
       if (value == 0) {
-        this.props.navigation.navigate('Input', {screenName: 'Destination', receiveProps: this.receiveProps});
+        this.props.navigation.navigate('Input',
+        { input: this.state.destination.subtitle,screenName: 'Destination', receiveProps: this.receiveProps });
       }
       if (value == 1) {
-        this.props.navigation.navigate('MapScreen', { location: this.state.location });
+        this.props.navigation.navigate('MapScreen',
+        { title: 'Map', screenName: 'Destination', location: this.state.location, receiveProps: this.receiveProps });
       }
     });
   }
 
   onPressComment = () => {
-        this.props.navigation.navigate('Input', {screenName: 'Comment', receiveProps: this.receiveProps});
-    };
+      this.props.navigation.navigate('Input',
+      { input: this.state.comment.subtitle, screenName: 'Comment', receiveProps: this.receiveProps });
+  };
+
+  onSubmit = () => {
+    if (this.state.customer.subtitle.length > 0) {
+      this.makeOrder(
+        this.state.address.subtitle,
+        this.state.time.subtitle,
+        this.state.customer.subtitle,
+        this.state.destination.subtitle,
+        this.state.comment.subtitle
+      );
+      alert('Your order has been made')
+    } else {
+      alert('Please enter customer credentials');
+    }
+  }
+
+  makeOrder(address, time, customer, destination, comment) {
+    firebase.database().ref('orders/' + customer).set({
+      address: address,
+      time: time,
+      destination: destination,
+      comment: comment
+    });
+  }
 
   render() {
     return (
-      <View>
-        <List>
+      <View >
+        <List >
           <ListItem
             title={this.state.address.title}
             subtitle={this.state.address.subtitle}
@@ -181,32 +249,35 @@ export default class OrderScreen extends React.Component {
           <ListItem
             title={this.state.customer.title}
             subtitle={this.state.customer.subtitle}
-            leftIcon={{name:this.state.address.icon}}
+            leftIcon={{name:this.state.customer.icon}}
             onPress={this.onPressCustomer}
           />
           <ListItem
             title={this.state.destination.title}
             subtitle={this.state.destination.subtitle}
-            leftIcon={{name:this.state.address.icon}}
+            leftIcon={{name:this.state.destination.icon}}
             onPress={this.onPressDestination}
           />
           <ListItem
             title={this.state.comment.title}
-            leftIcon={{name:this.state.address.icon}}
+            subtitle={this.state.comment.subtitle}
+            leftIcon={{name:this.state.comment.icon}}
             onPress={this.onPressComment}
           />
 
-          <DateTimePicker
-            isVisible={this.state.isDateTimePickerVisible}
-            onConfirm={this._handleDatePicked}
-            onCancel={this._hideDateTimePicker}
-            minimumDate={new Date()}
-            mode={'datetime'}
-          />
+          <TouchableWithoutFeedback>
+            <DateTimePicker
+              isVisible={this.state.isDateTimePickerVisible}
+              onConfirm={this._handleDatePicked}
+              onCancel={this._hideDateTimePicker}
+              minimumDate={new Date()}
+              mode={'datetime'}
+            />
+          </TouchableWithoutFeedback>
 
         </List>
 
-        <Button style={styles.button} onPress={this.onSubmit} title="Order" />
+        <Button style={styles.button} onPress={this.onSubmit} title="Order"/>
       </View>
     );
   }
@@ -215,11 +286,13 @@ export default class OrderScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#1B1B1B',
+  },
+  list: {
+    backgroundColor: '#1B1B1B'
   },
   button: {
+    backgroundColor: '#1DB954',
     marginTop: 10,
   }
 });
