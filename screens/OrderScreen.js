@@ -13,27 +13,24 @@ export default class OrderScreen extends React.Component {
   state = {
     address: {
         title: 'Address',
-        icon: 'my-location',
+        icon: 'av-timer',
         subtitle: 'Fetching your location ...'
       },
       time: {
         title: 'Pick-up Time',
-        icon: 'access-time',
+        icon: 'flight-takeoff',
         subtitle: ''
       },
       customer: {
         title: 'Customer phone',
-        icon: 'perm-identity',
         subtitle: ''
       },
       destination: {
         title: 'Destination',
-        icon: 'location-on',
         subtitle: ''
       },
       comment: {
         title: 'Comment',
-        icon: 'comment',
         subtitle: ''
       },
       isDateTimePickerVisible: false,
@@ -44,8 +41,9 @@ export default class OrderScreen extends React.Component {
 
   static navigationOptions = {
     title: 'Order',
+    // Note: By default the icon is only shown on iOS. Search the showIcon option below.
     tabBarIcon: ({ tintColor }) => (
-      <Icon
+    <Icon
       name='receipt' />
     ),
   };
@@ -232,8 +230,8 @@ export default class OrderScreen extends React.Component {
 
   render() {
     return (
-      <View >
-        <List >
+      <View>
+        <List>
           <ListItem
             title={this.state.address.title}
             subtitle={this.state.address.subtitle}
@@ -249,19 +247,19 @@ export default class OrderScreen extends React.Component {
           <ListItem
             title={this.state.customer.title}
             subtitle={this.state.customer.subtitle}
-            leftIcon={{name:this.state.customer.icon}}
+            leftIcon={{name:this.state.address.icon}}
             onPress={this.onPressCustomer}
           />
           <ListItem
             title={this.state.destination.title}
             subtitle={this.state.destination.subtitle}
-            leftIcon={{name:this.state.destination.icon}}
+            leftIcon={{name:this.state.address.icon}}
             onPress={this.onPressDestination}
           />
           <ListItem
             title={this.state.comment.title}
             subtitle={this.state.comment.subtitle}
-            leftIcon={{name:this.state.comment.icon}}
+            leftIcon={{name:this.state.address.icon}}
             onPress={this.onPressComment}
           />
 
@@ -277,7 +275,7 @@ export default class OrderScreen extends React.Component {
 
         </List>
 
-        <Button style={styles.button} onPress={this.onSubmit} title="Order"/>
+        <Button style={styles.button} onPress={this.onSubmit} title="Order" />
       </View>
     );
   }
@@ -286,13 +284,11 @@ export default class OrderScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1B1B1B',
-  },
-  list: {
-    backgroundColor: '#1B1B1B'
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
-    backgroundColor: '#1DB954',
     marginTop: 10,
   }
 });
