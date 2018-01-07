@@ -25,8 +25,17 @@ const TabNav = TabNavigator({
   tabBarPosition: 'bottom',
   animationEnabled: true,
   tabBarOptions: {
-    activeTintColor: '#e91e63',
-  },
+    activeTintColor: 'white',
+    inactiveTintColor: 'lightgray',
+    labelStyle: {
+      fontSize: 10,
+    },
+    style: {
+      backgroundColor: '#262626',
+      borderTopWidth: 1,
+      borderTopColor: 'white'
+    },
+  }
 });
 
 const StackNav = StackNavigator({

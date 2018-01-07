@@ -44,9 +44,14 @@ export default class OrderScreen extends React.Component {
 
   static navigationOptions = {
     title: 'Order',
+    headerTitleStyle: {color: 'white'},
+    headerStyle: {
+      backgroundColor: '#262626',
+    },
     tabBarIcon: ({ tintColor }) => (
       <Icon
-      name='receipt' />
+      name='receipt'
+      color='#FFD500' />
     ),
   };
 
@@ -232,34 +237,40 @@ export default class OrderScreen extends React.Component {
 
   render() {
     return (
-      <View >
-        <List >
+      <View style={styles.container} >
+        <List containerStyle={styles.list} >
           <ListItem
+            style={{borderColor: 'yellow'}}
             title={this.state.address.title}
+            titleStyle={{color: 'white'}}
             subtitle={this.state.address.subtitle}
             leftIcon={{name:this.state.address.icon}}
             onPress={this.onPressAddress}
           />
           <ListItem
             title={this.state.time.title}
+            titleStyle={{color: 'white'}}
             subtitle={this.state.time.subtitle}
             leftIcon={{name:this.state.time.icon}}
             onPress={this.onPressTime}
           />
           <ListItem
             title={this.state.customer.title}
+            titleStyle={{color: 'white'}}
             subtitle={this.state.customer.subtitle}
             leftIcon={{name:this.state.customer.icon}}
             onPress={this.onPressCustomer}
           />
           <ListItem
             title={this.state.destination.title}
+            titleStyle={{color: 'white'}}
             subtitle={this.state.destination.subtitle}
             leftIcon={{name:this.state.destination.icon}}
             onPress={this.onPressDestination}
           />
           <ListItem
             title={this.state.comment.title}
+            titleStyle={{color: 'white'}}
             subtitle={this.state.comment.subtitle}
             leftIcon={{name:this.state.comment.icon}}
             onPress={this.onPressComment}
@@ -277,7 +288,7 @@ export default class OrderScreen extends React.Component {
 
         </List>
 
-        <Button style={styles.button} onPress={this.onSubmit} title="Order"/>
+        <Button style={styles.button} onPress={this.onSubmit} backgroundColor='#FFC108' title="Order"/>
       </View>
     );
   }
@@ -289,10 +300,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#1B1B1B',
   },
   list: {
-    backgroundColor: '#1B1B1B'
+    backgroundColor: '#1B1B1B',
+    borderColor: '#262626',
+    borderBottomColor: '#262626'
   },
   button: {
-    backgroundColor: '#1DB954',
+    backgroundColor: '#FFD500',
     marginTop: 10,
+  },
+  icon: {
+    backgroundColor: '#FFD500',
   }
 });
