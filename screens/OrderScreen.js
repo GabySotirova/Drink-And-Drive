@@ -59,7 +59,7 @@ export default class OrderScreen extends React.Component {
       this._getLocationAsync();
     }
   }
-
+  //random edits
   //Get data from child components
   receiveProps = (sender, val) => {
     if (sender == 'Address') {
