@@ -43,8 +43,8 @@ export default class OrderScreen extends React.Component {
   };
 
   static navigationOptions = {
-    title: 'Order',
-    headerTitleStyle: {color: 'white'},
+    title: 'Drink & Drive',
+    headerTitleStyle: {color: '#FFD500', fontWeight: 'bold'},
     headerStyle: {
       backgroundColor: '#262626',
     },
@@ -240,7 +240,7 @@ export default class OrderScreen extends React.Component {
       <View style={styles.container} >
         <List containerStyle={styles.list} >
           <ListItem
-            style={{borderBottomColor: '#bbb'}}
+            containerStyle={styles.listItem}
             title={this.state.address.title}
             titleStyle={{color: 'white'}}
             subtitle={this.state.address.subtitle}
@@ -248,6 +248,7 @@ export default class OrderScreen extends React.Component {
             onPress={this.onPressAddress}
           />
           <ListItem
+            containerStyle={styles.listItem}
             title={this.state.time.title}
             titleStyle={{color: 'white'}}
             subtitle={this.state.time.subtitle}
@@ -255,6 +256,7 @@ export default class OrderScreen extends React.Component {
             onPress={this.onPressTime}
           />
           <ListItem
+            containerStyle={styles.listItem}
             title={this.state.customer.title}
             titleStyle={{color: 'white'}}
             subtitle={this.state.customer.subtitle}
@@ -262,6 +264,7 @@ export default class OrderScreen extends React.Component {
             onPress={this.onPressCustomer}
           />
           <ListItem
+            containerStyle={styles.listItem}
             title={this.state.destination.title}
             titleStyle={{color: 'white'}}
             subtitle={this.state.destination.subtitle}
@@ -269,6 +272,7 @@ export default class OrderScreen extends React.Component {
             onPress={this.onPressDestination}
           />
           <ListItem
+            containerStyle={styles.listItem}
             title={this.state.comment.title}
             titleStyle={{color: 'white'}}
             subtitle={this.state.comment.subtitle}
@@ -288,7 +292,15 @@ export default class OrderScreen extends React.Component {
 
         </List>
 
-        <Button style={styles.button} onPress={this.onSubmit} backgroundColor='#FFC108' title="Order"/>
+        <Button
+          style={styles.button}
+          onPress={this.onSubmit}
+          backgroundColor='#FFC108'
+          color='#545454'
+          fontWeight='bold'
+          title="Order"
+          borderRadius={30}
+        />
       </View>
     );
   }
@@ -301,13 +313,14 @@ const styles = StyleSheet.create({
   },
   list: {
     backgroundColor: '#1B1B1B',
-    borderColor: '#262626',
+    borderColor: '#1B1B1B'
   },
   button: {
     backgroundColor: '#FFD500',
-    marginTop: 10,
+    marginTop: 30,
+    borderRadius: 30,
   },
-  icon: {
-    backgroundColor: '#FFD500',
+  listItem: {
+    borderBottomColor: '#545454',
   }
 });

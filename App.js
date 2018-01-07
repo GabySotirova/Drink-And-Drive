@@ -33,7 +33,7 @@ const TabNav = TabNavigator({
     style: {
       backgroundColor: '#262626',
       borderTopWidth: 1,
-      borderTopColor: 'white'
+      borderTopColor: '#262626'
     },
   }
 });
