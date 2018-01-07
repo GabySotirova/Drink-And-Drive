@@ -38,7 +38,9 @@ export default class ProfileScreen extends React.Component {
     // Note: By default the icon is only shown on iOS. Search the showIcon option below.
     tabBarIcon: ({ tintColor }) => (
     <Icon
-      name='account-circle' />
+      name='account-circle'
+      color='#FFD500'
+     />
     ),
   };
 

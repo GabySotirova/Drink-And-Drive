@@ -25,7 +25,7 @@ const TabNav = TabNavigator({
   tabBarPosition: 'bottom',
   animationEnabled: true,
   tabBarOptions: {
-    activeTintColor: 'white',
+    activeTintColor: '#FFD500',
     inactiveTintColor: 'lightgray',
     labelStyle: {
       fontSize: 10,

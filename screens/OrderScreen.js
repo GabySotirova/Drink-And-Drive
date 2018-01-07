@@ -240,7 +240,7 @@ export default class OrderScreen extends React.Component {
       <View style={styles.container} >
         <List containerStyle={styles.list} >
           <ListItem
-            style={{borderColor: 'yellow'}}
+            style={{borderBottomColor: '#bbb'}}
             title={this.state.address.title}
             titleStyle={{color: 'white'}}
             subtitle={this.state.address.subtitle}
@@ -302,7 +302,6 @@ const styles = StyleSheet.create({
   list: {
     backgroundColor: '#1B1B1B',
     borderColor: '#262626',
-    borderBottomColor: '#262626'
   },
   button: {
     backgroundColor: '#FFD500',
