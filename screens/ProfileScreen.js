@@ -34,7 +34,7 @@ export default class ProfileScreen extends React.Component {
   };
 
   static navigationOptions = {
-    title: 'Authenticate',
+    title: 'Profile',
     headerTitleStyle: {color: '#FFD500', fontWeight: 'bold'},
     headerStyle: {
       backgroundColor: '#262626',

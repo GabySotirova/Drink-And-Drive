@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, View, Text } from 'react-native';
+import { StyleSheet, Alert, View, Text } from 'react-native';
 import { FormLabel, FormInput, Button, AsyncStorage } from 'react-native-elements';
 import axios from 'axios';
 import firebase from 'firebase';
@@ -59,20 +59,46 @@ export default class SignInForm extends Component {
 
   render() {
     return (
-      <View>
-        <View style={{ marginBottom: 10 }}>
-         <FormLabel>Enter Code:</FormLabel>
+      <View style={styles.container}>
+        <View style={styles.form}>
+         <FormLabel labelStyle={{color: 'white'}}>Enter Code:</FormLabel>
          <FormInput
+          style={{placeholderColor: 'white'}}
+          inputStyle={styles.input}
           value={this.state.code}
           onChangeText={code => this.setState({ code })}
           placeholder={'e.g. 3771'}
          />
        </View>
 
-       <Button onPress={this.onSubmit} title="Enter" />
-       <Button style={{marginTop: 10, backgroundColor: "transparent"}} title="Back" onPress={this.onBack} />
-
+       <Button style={styles.button}
+         onPress={this.onSubmit}
+         backgroundColor='#FFC108'
+         color='#545454'
+         fontWeight='bold'
+         title="Enter"
+         borderRadius={30}
+       />
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1B1B1B',
+  },
+  form: {
+    marginBottom: 10,
+    borderBottomColor: '#545454'
+  },
+  input: {
+    color: '#545454',
+  },
+  button: {
+    backgroundColor: '#FFD500',
+    marginTop: 30,
+    borderRadius: 30,
+  },
+});

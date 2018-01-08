@@ -10,7 +10,18 @@ export default class ProfileForm extends React.Component {
   }
 
   static navigationOptions = {
-
+    title: 'Profile',
+    headerTitleStyle: {color: '#FFD500', fontWeight: 'bold'},
+    headerStyle: {
+      backgroundColor: '#262626',
+    },
+    tabBarLabel: 'Profile',
+    tabBarIcon: ({ tintColor }) => (
+    <Icon
+      name='account-circle'
+      color='#FFD500'
+     />
+    ),
   };
 
   componentDidMount() {
@@ -35,7 +46,6 @@ export default class ProfileForm extends React.Component {
   onSave = async () => {
     try {
       await AsyncStorage.multiSet([['userName', this.state.name], ['userPhone', this.state.phone], ['userAddress', this.state.address]]);
-      alert('Saved');
       this.fetchInformation();
     } catch (error) {
       console.log(error);
@@ -44,30 +54,40 @@ export default class ProfileForm extends React.Component {
 
   render() {
     return (
-      <View>
-        <View style={{ marginBottom: 10 }}>
+      <View style={styles.container}>
+        <View style={styles.form}>
 
-         <FormLabel>Name:</FormLabel>
+         <FormLabel labelStyle={{color: 'white'}}>Name:</FormLabel>
          <FormInput
+          inputStyle={styles.input}
           value={this.state.name}
           onChangeText={name => this.setState({ name })}
           placeholder={'John Smith'}
          />
 
-         <FormLabel>Phone:</FormLabel>
+         <FormLabel labelStyle={{color: 'white'}}>Phone:</FormLabel>
          <FormInput
+          inputStyle={styles.input}
           value={this.state.phone}
          />
 
-         <FormLabel>Home address:</FormLabel>
+         <FormLabel labelStyle={{color: 'white'}}>Home address:</FormLabel>
          <FormInput
+          inputStyle={styles.input}
           value={this.state.address}
           onChangeText={address => this.setState({ address })}
           placeholder={'Danmarksgade 63, 9000, Aalborg'}
          />
        </View>
 
-       <Button onPress={this.onSave} title="Save" />
+       <Button style={styles.button}
+         onPress={this.onSave}
+         backgroundColor='#FFC108'
+         color='#545454'
+         fontWeight='bold'
+         title="Save"
+         borderRadius={30}
+       />
       </View>
     );
   }
@@ -76,8 +96,18 @@ export default class ProfileForm extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#1B1B1B',
+  },
+  form: {
+    marginBottom: 10,
+    borderBottomColor: '#545454'
+  },
+  input: {
+    color: '#545454',
+  },
+  button: {
+    backgroundColor: '#FFD500',
+    marginTop: 30,
+    borderRadius: 30,
   },
 });

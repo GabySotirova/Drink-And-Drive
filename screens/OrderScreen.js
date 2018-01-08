@@ -214,6 +214,7 @@ export default class OrderScreen extends React.Component {
 
   onSubmit = () => {
     if (this.state.customer.subtitle.length > 0) {
+      this.props.navigation.navigate('Status', { progress: 0.25, progressText: 'Order Received'});
       this.makeOrder(
         this.state.address.subtitle,
         this.state.time.subtitle,
@@ -221,7 +222,6 @@ export default class OrderScreen extends React.Component {
         this.state.destination.subtitle,
         this.state.comment.subtitle
       );
-      alert('Your order has been made')
     } else {
       alert('Please enter customer credentials');
     }
