@@ -48,6 +48,7 @@ export default class OrderScreen extends React.Component {
     headerStyle: {
       backgroundColor: '#262626',
     },
+    tabBarLabel: 'Order',
     tabBarIcon: ({ tintColor }) => (
       <Icon
       name='receipt'
@@ -244,7 +245,8 @@ export default class OrderScreen extends React.Component {
             title={this.state.address.title}
             titleStyle={{color: 'white'}}
             subtitle={this.state.address.subtitle}
-            leftIcon={{name:this.state.address.icon}}
+            leftIcon={{name:this.state.address.icon, color: '#FFD500'}}
+            rightIcon={{color:'#FFD500'}}
             onPress={this.onPressAddress}
           />
           <ListItem
@@ -252,7 +254,8 @@ export default class OrderScreen extends React.Component {
             title={this.state.time.title}
             titleStyle={{color: 'white'}}
             subtitle={this.state.time.subtitle}
-            leftIcon={{name:this.state.time.icon}}
+            leftIcon={{name:this.state.time.icon, color: '#FFD500'}}
+            rightIcon={{color:'#FFD500'}}
             onPress={this.onPressTime}
           />
           <ListItem
@@ -260,7 +263,8 @@ export default class OrderScreen extends React.Component {
             title={this.state.customer.title}
             titleStyle={{color: 'white'}}
             subtitle={this.state.customer.subtitle}
-            leftIcon={{name:this.state.customer.icon}}
+            leftIcon={{name:this.state.customer.icon, color: '#FFD500'}}
+            rightIcon={{color:'#FFD500'}}
             onPress={this.onPressCustomer}
           />
           <ListItem
@@ -268,7 +272,8 @@ export default class OrderScreen extends React.Component {
             title={this.state.destination.title}
             titleStyle={{color: 'white'}}
             subtitle={this.state.destination.subtitle}
-            leftIcon={{name:this.state.destination.icon}}
+            leftIcon={{name:this.state.destination.icon, color: '#FFD500'}}
+            rightIcon={{color:'#FFD500'}}
             onPress={this.onPressDestination}
           />
           <ListItem
@@ -276,7 +281,8 @@ export default class OrderScreen extends React.Component {
             title={this.state.comment.title}
             titleStyle={{color: 'white'}}
             subtitle={this.state.comment.subtitle}
-            leftIcon={{name:this.state.comment.icon}}
+            leftIcon={{name:this.state.comment.icon, color: '#FFD500'}}
+            rightIcon={{color:'#FFD500'}}
             onPress={this.onPressComment}
           />
 

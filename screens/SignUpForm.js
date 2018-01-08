@@ -47,13 +47,23 @@ class SignUpForm extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.form}>
-         <FormLabel>Enter Phone:</FormLabel>
+         <FormLabel labelStyle={{color: 'white'}}>Enter Phone:</FormLabel>
          <FormInput
+          style={{placeholderColor: 'white'}}
+          inputStyle={styles.input}
           placeholder={'e.g. 84635395'}
           onChangeText={phone => this.setState({ phone })}
         />
         </View>
-       <Button onPress={this.onSubmit} title="Enter" />
+       <Button
+         style={styles.button}
+         onPress={this.onSubmit}
+         backgroundColor='#FFC108'
+         color='#545454'
+         fontWeight='bold'
+         title="Enter"
+         borderRadius={30}
+       />
       </View>
     );
   }
@@ -63,9 +73,18 @@ export default SignUpForm
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#1B1B1B',
   },
   form: {
-    marginBottom: 10
-  }
+    marginBottom: 10,
+    borderBottomColor: '#545454'
+  },
+  input: {
+    color: '#545454',
+  },
+  button: {
+    backgroundColor: '#FFD500',
+    marginTop: 30,
+    borderRadius: 30,
+  },
 });

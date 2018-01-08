@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { Icon, FormLabel, FormInput, Button } from 'react-native-elements';
+import { StyleSheet, View, Text, Button } from 'react-native';
+import { Icon } from 'react-native-elements';
+import * as Progress from 'react-native-progress';
 
 export default class StatusScreen extends React.Component {
 
+  state = {
+    progress: 0,
+    progressText: 'No active orders'
+  }
+
   static navigationOptions = {
-    tabBarLabel: 'Status',
-    // Note: By default the icon is only shown on iOS. Search the showIcon option below.
+    title: 'Status',
+    headerTitleStyle: {color: '#FFD500', fontWeight: 'bold'},
+    headerStyle: {
+      backgroundColor: '#262626',
+    },
     tabBarIcon: ({ tintColor }) => (
     <Icon
       name='timelapse'
@@ -15,10 +24,16 @@ export default class StatusScreen extends React.Component {
     ),
   };
 
+  componentDidMount() {
+
+  }
+
+
   render() {
     return (
       <View style={styles.container}>
-        <Text>Status Screen</Text>
+        <Progress.Circle ref='circle' color='#FFD500' progress={this.state.progress} size={200} thickness={15}/>
+        <Text style={styles.text}>{this.state.progressText}</Text>
       </View>
     );
   }
@@ -27,8 +42,12 @@ export default class StatusScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#1B1B1B',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around'
   },
+  text: {
+    fontSize: 20,
+    color: 'white'
+  }
 });

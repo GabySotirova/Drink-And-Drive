@@ -6,8 +6,11 @@ import firebase from 'firebase';
 
 const URL = 'https://us-central1-drink-and-drive.cloudfunctions.net';
 
-class SignInForm extends Component {
-  state = { phone: '', code: '' };
+export default class SignInForm extends Component {
+  state = {
+    phone: '',
+    code: ''
+  }
 
   componentWillMount() {
     //this.getPhone();
@@ -73,4 +76,3 @@ class SignInForm extends Component {
     );
   }
 }
-export default SignInForm

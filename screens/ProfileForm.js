@@ -16,6 +16,7 @@ export default class ProfileForm extends React.Component {
   componentDidMount() {
     this.setState({ phone: this.props.navigation.state.params.phone });
     this.fetchInformation();
+    this.onSave();
   }
 
   fetchInformation = async () => {
